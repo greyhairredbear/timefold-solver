@@ -75,7 +75,7 @@ public interface SolverJobBuilder<Solution_, ProblemId_> {
      */
     @NonNull
     SolverJobBuilder<Solution_, ProblemId_>
-            withFinalBestSolutionConsumer(@NonNull Consumer<? super Solution_> finalBestSolutionConsumer);
+            withFinalBestSolutionConsumer(@NonNull Consumer<? super @NonNull Solution_> finalBestSolutionConsumer);
 
     /**
      * As defined by #withFirstInitializedSolutionConsumer(FirstInitializedSolutionConsumer).

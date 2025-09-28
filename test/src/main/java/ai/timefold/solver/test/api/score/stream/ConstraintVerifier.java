@@ -16,7 +16,7 @@ import ai.timefold.solver.core.config.util.ConfigUtils;
 import ai.timefold.solver.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import ai.timefold.solver.test.impl.score.stream.DefaultConstraintVerifier;
 
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Implementations must be thread-safe, in order to enable parallel test execution.
@@ -24,6 +24,7 @@ import org.jspecify.annotations.NonNull;
  * @param <ConstraintProvider_>
  * @param <Solution_>
  */
+@NullMarked
 public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvider, Solution_> {
 
     /**
@@ -36,9 +37,9 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
      * @param <Solution_> type of the {@link PlanningSolution}-annotated class
      */
     static <ConstraintProvider_ extends ConstraintProvider, Solution_>
-            @NonNull ConstraintVerifier<ConstraintProvider_, Solution_> build(
-                    @NonNull ConstraintProvider_ constraintProvider,
-                    @NonNull Class<Solution_> planningSolutionClass, @NonNull Class<?> @NonNull... entityClasses) {
+            ConstraintVerifier<ConstraintProvider_, Solution_> build(
+                    ConstraintProvider_ constraintProvider,
+                    Class<Solution_> planningSolutionClass, Class<?>... entityClasses) {
         requireNonNull(constraintProvider);
         var solutionDescriptor = SolutionDescriptor
                 .buildSolutionDescriptor(requireNonNull(planningSolutionClass), entityClasses);
@@ -56,8 +57,8 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     static <ConstraintProvider_ extends ConstraintProvider, Solution_>
-            @NonNull ConstraintVerifier<ConstraintProvider_, Solution_>
-            create(@NonNull SolverConfig solverConfig) {
+            ConstraintVerifier<ConstraintProvider_, Solution_>
+            create(SolverConfig solverConfig) {
         var nonNullSolverConfig = requireNonNull(solverConfig);
         var entityClassList = Objects.requireNonNull(nonNullSolverConfig.getEntityClassList());
         var solutionDescriptor =
@@ -81,24 +82,21 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
      * @deprecated There is only one implementation, so this method is deprecated.
      *             This method no longer has any effect.
      */
-    @NonNull
     @Deprecated(forRemoval = true, since = "1.16.0")
     default ConstraintVerifier<ConstraintProvider_, Solution_> withConstraintStreamImplType(
-            @NonNull ConstraintStreamImplType constraintStreamImplType) {
+            ConstraintStreamImplType constraintStreamImplType) {
         return this;
     }
 
     /**
      * Creates a constraint verifier for a given {@link Constraint} of the {@link ConstraintProvider}.
      */
-    @NonNull
     SingleConstraintVerification<Solution_> verifyThat(
-            @NonNull BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction);
+            BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction);
 
     /**
      * Creates a constraint verifier for all constraints of the {@link ConstraintProvider}.
      */
-    @NonNull
     MultiConstraintVerification<Solution_> verifyThat();
 
 }
